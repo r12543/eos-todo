@@ -3,27 +3,18 @@ import ReactDOM from "react-dom";
 import EOS from "eosjs";
 import update from "react-addons-update";
 
-import { isEqual } from "lodash";
-
 const EOS_CONFIG = {
   contractName: "inno", // Contract name
   contractSender: "inno", // User executing the contract (should be paired with private key)
   network: {
     protocol: "http",
     blockchain: "eos",
-    host: "0.0.0.0",
-    port: 7777,
-    chainId: "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+    host: "dev.cryptolions.io",
+    port: 38888,
+    chainId: "038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca"
   },
   eosOptions: {}
 };
-
-function isObjPresentInArray(obj, array) {
-  for (let item of array) {
-    if (isEqual(obj, item)) return true;
-  }
-  return false;
-}
 
 class TodoForm extends React.Component {
   constructor(props) {
@@ -79,48 +70,6 @@ class TodoList extends React.Component {
 
     this.loadTodos();
   };
-
-  setNewPermissions = accountName => {
-    this.eosClient
-      .getAccount(accountName)
-      .then(account => {
-        let newPerms = this.updatePermissions(
-          JSON.parse(JSON.stringify(account.permissions))
-        );
-        this.eosClient.transaction(tr => {
-          for (const perm of newPerms) {
-            if (perm.perm_name === "active") {
-              tr.updateauth({
-                account: accountName,
-                permission: perm.perm_name,
-                parent: perm.parent,
-                auth: perm.required_auth
-              });
-            }
-          }
-        });
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
-  updatePermissions(permissions) {
-    for (let perm of permissions) {
-      if (perm.perm_name === "active") {
-        let newPerm = {
-          permission: {
-            actor: EOS_CONFIG.contractSender,
-            permission: "eosio.code"
-          },
-          weight: 1
-        };
-        if (!isObjPresentInArray(newPerm, perm.required_auth.accounts))
-          perm.required_auth.accounts.push(newPerm);
-      }
-    }
-    return permissions;
-  }
 
   loadTodos() {
     this.eosClient
