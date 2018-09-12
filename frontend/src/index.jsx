@@ -4,8 +4,8 @@ import EOS from "eosjs";
 import update from "react-addons-update";
 
 const EOS_CONFIG = {
-  contractName: "inno", // Contract name
-  contractSender: "inno", // User executing the contract (should be paired with private key)
+  contractName: "test", // Contract name
+  contractSender: "test", // User executing the contract (should be paired with private key)
   network: {
     protocol: "http",
     blockchain: "eos",
